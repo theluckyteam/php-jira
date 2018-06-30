@@ -1,0 +1,18 @@
+{
+    "name": "luckyteam/jira",
+    "authors": [
+        {
+            "name": "Ivan Mironov",
+            "email": "mironorange@gmail.com"
+        }
+    ],
+    "require": {
+        "guzzlehttp/guzzle": "^6.3"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^5.7"
+    },
+    "autoload": {
+        "psr-4": {"LuckyTeam\\Jira\\": "src/jira"}
+    }
+}
