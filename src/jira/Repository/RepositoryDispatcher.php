@@ -4,10 +4,11 @@ namespace LuckyTeam\Jira\Repository;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
+use LuckyTeam\Jira\Entity\CookieAuthSession;
 
 /**
  * Class RepositoryDispatcher
- * @package App\Component
+ * @package LuckyTeam\Jira\Repository
  */
 class RepositoryDispatcher
 {

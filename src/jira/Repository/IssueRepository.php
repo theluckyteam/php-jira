@@ -4,12 +4,11 @@ namespace LuckyTeam\Jira\Repository;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
-use Symfony\Component\Serializer\Encoder\JsonDecode;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use LuckyTeam\Jira\Entity\ReadonlyIssue as Issue;
 
 /**
  * Class IssueRepository
- * @package App\Component
+ * @package LuckyTeam\Jira\Repository
  */
 class IssueRepository
 {
@@ -63,8 +62,7 @@ class IssueRepository
         $body->seek(0);
         $contents = $body->getContents();
 
-        $decoder = new JsonDecode(true);
-        $issue = $decoder->decode($contents, JsonEncoder::FORMAT);
+        $issue = new Issue(json_decode($contents, true));
 
         return $issue;
     }
@@ -91,10 +89,14 @@ class IssueRepository
         $body->seek(0);
         $contents = $body->getContents();
 
-        $decoder = new JsonDecode(true);
-        $decodedContents = $decoder->decode($contents, JsonEncoder::FORMAT);
+        $decodedContents = json_decode($contents, true);
 
-        $issues = isset($decodedContents['issues']) ? $decodedContents['issues'] : [];
+        $issues = [];
+        if (isset($decodedContents['issues']) && is_array($decodedContents['issues'])) {
+            foreach ($decodedContents['issues'] as $issue) {
+                $issues[] = new Issue($issue);
+            }
+        }
 
         return $issues;
     }

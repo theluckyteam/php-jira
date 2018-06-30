@@ -4,8 +4,7 @@ namespace LuckyTeam\Jira\Repository;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
-use Symfony\Component\Serializer\Encoder\JsonDecode;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use LuckyTeam\Jira\Entity\CookieAuthSession;
 
 /**
  * Class CookieAuthSessionRepository
@@ -32,6 +31,11 @@ class CookieAuthSessionRepository
      * @var string Endpoint for obtaining AuthSession
      */
     private $endpoint;
+
+    /**
+     * @var string Endpoint for obtaining AuthSession
+     */
+    private $path = '/rest/auth/1/session';
 
     /**
      * @var Client
@@ -73,7 +77,7 @@ class CookieAuthSessionRepository
      */
     private function create(): CookieAuthSession
     {
-        $response = $this->request($this->endpoint . '/rest/auth/1/session', [
+        $response = $this->request($this->endpoint . $this->path, [
             RequestOptions::JSON => [
                 'username' => $this->username,
                 'password' => $this->password,
@@ -84,8 +88,7 @@ class CookieAuthSessionRepository
         $body->seek(0);
         $contents = $body->getContents();
 
-        $decoder = new JsonDecode(true);
-        $contents = $decoder->decode($contents, JsonEncoder::FORMAT);
+        $contents = json_decode($contents, true);
 
         if (isset($contents['session']['name'], $contents['session']['value'])) {
             return new CookieAuthSession($contents['session']['name'], $contents['session']['value']);
@@ -114,5 +117,13 @@ class CookieAuthSessionRepository
         }
 
         return $response;
+    }
+
+    /**
+     * @param Client $client
+     */
+    public function setClient($client)
+    {
+        $this->client = $client;
     }
 }
