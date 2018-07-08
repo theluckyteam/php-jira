@@ -5,6 +5,7 @@ namespace LuckyTeam\Jira\Repository;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
 use LuckyTeam\Jira\Entity\CookieAuthSession;
+use LuckyTeam\Jira\Entity\ReadonlyIssue;
 
 /**
  * Class RepositoryDispatcher
@@ -70,31 +71,50 @@ class RepositoryDispatcher
         return $authSessionRepository->get();
     }
 
+    /**
+     * @param $query
+     * @return ReadonlyIssue
+     * @throws \Exception
+     */
     public function getIssue($query)
     {
-        if (!isset($this->repositories['issue'])) {
-            $issueRepository = new IssueRepository($this->endpoint);
-            $issueRepository->setRepositoryDispatcher($this);
-            $this->repositories['issue'] = $issueRepository;
-        }
-
-        /** @var IssueRepository $issueRepository */
-        $issueRepository = $this->repositories['issue'];
+        $issueRepository = $this->getRepository('issue');
 
         return $issueRepository->one($query);
     }
 
+    /**
+     * @param $query
+     * @return ReadonlyIssue[]
+     */
     public function getIssues($query)
     {
-        if (!isset($this->repositories['issue'])) {
-            $issueRepository = new IssueRepository($this->endpoint);
-            $issueRepository->setRepositoryDispatcher($this);
-            $this->repositories['issue'] = $issueRepository;
-        }
-
-        /** @var IssueRepository $issueRepository */
-        $issueRepository = $this->repositories['issue'];
+        $issueRepository = $this->getRepository('issue');
 
         return $issueRepository->all($query);
+    }
+
+    /**
+     * @param $name
+     * @return IssueRepository
+     * @throws \Exception
+     */
+    public function getRepository($name)
+    {
+        $repository = null;
+
+        if ('issue' === $name) {
+            if (!isset($this->repositories['issue'])) {
+                $repository = new IssueRepository($this->endpoint);
+                $repository->setRepositoryDispatcher($this);
+                $this->repositories['issue'] = $repository;
+            } else {
+                $repository = $this->repositories['issue'];
+            }
+        } else {
+            throw new \Exception('Unknown repository ' . $name);
+        }
+
+        return $repository;
     }
 }

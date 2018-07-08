@@ -99,7 +99,7 @@ class IssueRepository
         $body->seek(0);
         $contents = $body->getContents();
 
-        $issue = new Issue(json_decode($contents, true));
+        $issue = $this->createInstance(json_decode($contents, true));
 
         return $issue;
     }
@@ -131,7 +131,7 @@ class IssueRepository
         $issues = [];
         if (isset($decodedContents['issues']) && is_array($decodedContents['issues'])) {
             foreach ($decodedContents['issues'] as $issue) {
-                $issues[] = new Issue($issue);
+                $issues[] = $this->createInstance($issue);
             }
         }
 
@@ -144,5 +144,10 @@ class IssueRepository
     public function setRepositoryDispatcher(RepositoryDispatcher $repositoryDispatcher)
     {
         $this->repositoryDispatcher = $repositoryDispatcher;
+    }
+
+    public function createInstance($properties)
+    {
+        return new Issue($properties);
     }
 }
