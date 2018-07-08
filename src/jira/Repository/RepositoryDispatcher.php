@@ -70,7 +70,7 @@ class RepositoryDispatcher
         return $authSessionRepository->get();
     }
 
-    public function getIssue($key)
+    public function getIssue($query)
     {
         if (!isset($this->repositories['issue'])) {
             $issueRepository = new IssueRepository($this->endpoint);
@@ -81,7 +81,7 @@ class RepositoryDispatcher
         /** @var IssueRepository $issueRepository */
         $issueRepository = $this->repositories['issue'];
 
-        return $issueRepository->one($key);
+        return $issueRepository->one($query);
     }
 
     public function getIssues($query)

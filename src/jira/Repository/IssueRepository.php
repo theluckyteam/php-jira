@@ -44,19 +44,56 @@ class IssueRepository
     /**
      * Returns issue of Jira
      *
-     * @param string $key Key of issue
+     * @param mixed $query
      *
      * @return array An array of issue
+     * @throws \Exception
+     *
+     * @see https://developer.atlassian.com/cloud/jira/platform/rest/#api-api-2-issue-issueIdOrKey-get
      */
-    public function one($key)
+    public function one($query)
     {
         $authSession = $this->repositoryDispatcher->getCookieAuthSession();
 
-        $response = $this->client->request('GET', $this->endpoint . '/rest/api/2/issue/' . $key, [
+        $url = null;
+        $options = [
             RequestOptions::HEADERS => [
                 'Cookie' => $authSession->getName() . '=' . $authSession->getValue(),
             ],
-        ]);
+        ];
+
+        // Prepares request options
+        if (is_scalar($query)) {
+            $url = $this->endpoint . '/rest/api/2/issue/' . $query;
+        } elseif (is_array($query)
+            && (array_key_exists('id', $query) || array_key_exists('key', $query))
+        ) {
+            // Prepares key by query
+            if (isset($query['id'])) {
+                $url = $this->endpoint . '/rest/api/2/issue/' . $query['id'];
+                unset($query['id']);
+            } elseif (isset($query['key'])) {
+                $url = $this->endpoint . '/rest/api/2/issue/' . $query['key'];
+                unset($query['key']);
+            }
+
+            // Prepares query params
+            foreach ($query as $param => $value) {
+                if ('fields' === $param) {
+                    if (is_array($value)) {
+                        $query[$param] = implode(',', $value);
+                    }
+                } else {
+                    unset($query[$param]);
+                }
+            }
+
+            $options[RequestOptions::QUERY] = $query;
+        } else {
+            throw new \Exception('Bad params');
+        }
+
+        $response = $this->client->request('GET', $url, $options);
 
         $body = $response->getBody();
         $body->seek(0);
