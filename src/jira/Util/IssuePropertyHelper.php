@@ -8,6 +8,7 @@ class IssuePropertyHelper
         'id' => 1,
         'key' => 1,
         'summary' => 1,
+        'issuelinks' => 1,
     ];
 
     public static function exists($issue, $property): bool
@@ -20,6 +21,7 @@ class IssuePropertyHelper
                     break;
 
                 case 'summary':
+                case 'issuelinks':
                     return isset($issue['fields'][$property]);
                     break;
             }
@@ -39,6 +41,7 @@ class IssuePropertyHelper
                 break;
 
             case 'summary':
+            case 'issuelinks':
                 if (isset($issue['fields'][$property])) {
                     return $issue['fields'][$property];
                 }

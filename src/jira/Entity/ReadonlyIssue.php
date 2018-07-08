@@ -26,6 +26,11 @@ class ReadonlyIssue
         return $this->getProperty('id');
     }
 
+    public function getLinks()
+    {
+        return $this->getProperty('issuelinks');
+    }
+
     public function getKey(): string
     {
         return $this->getProperty('key');
