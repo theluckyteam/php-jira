@@ -36,6 +36,11 @@ class ReadonlyIssue
         return $this->getProperty('key');
     }
 
+    public function getProject(): array
+    {
+        return $this->getProperty('project');
+    }
+
     public function getSummary(): string
     {
         return $this->getProperty('summary');

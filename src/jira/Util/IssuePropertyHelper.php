@@ -8,6 +8,7 @@ class IssuePropertyHelper
         'id' => 1,
         'key' => 1,
         'summary' => 1,
+        'project' => 1,
         'issuelinks' => 1,
     ];
 
@@ -21,6 +22,7 @@ class IssuePropertyHelper
                     break;
 
                 case 'summary':
+                case 'project':
                 case 'issuelinks':
                     return isset($issue['fields'][$property]);
                     break;
@@ -41,6 +43,7 @@ class IssuePropertyHelper
                 break;
 
             case 'summary':
+            case 'project':
             case 'issuelinks':
                 if (isset($issue['fields'][$property])) {
                     return $issue['fields'][$property];
