@@ -17,6 +17,13 @@ class IssueLinksAggregator {
      */
     private $dispatcher;
 
+    private $issueQuery = [
+        'fields' => ['id', 'summary', 'issuelinks'],
+        'expand' => [],
+        'startAt' => 0,
+        'maxResults' => 1000,
+    ];
+
     /**
      * @var int
      */
@@ -84,13 +91,8 @@ class IssueLinksAggregator {
 
     private function getIssuesFromRepositoryByKeys(array $keys)
     {
-        $query = [
-            'fields' => ['id', 'summary', 'issuelinks'],
-            'expand' => [],
-            'jql' => 'key IN (' . implode(',', $keys) . ')',
-            'startAt' => 0,
-            'maxResults' => 1000,
-        ];
+        $query = $this->issueQuery;
+        $query['jql'] = 'key IN (' . implode(',', $keys) . ')';
 
         return $this->dispatcher->getIssues($query);
     }
@@ -156,5 +158,17 @@ class IssueLinksAggregator {
     public function getRoot()
     {
         return $this->root;
+    }
+
+    /**
+     * @param array $issueQuery
+     *
+     * @return $this
+     */
+    public function setIssueQuery(array $issueQuery)
+    {
+        $this->issueQuery = $issueQuery;
+
+        return $this;
     }
 }
