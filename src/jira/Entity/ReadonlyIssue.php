@@ -62,4 +62,9 @@ class ReadonlyIssue
 
         return Property::get($this->properties, $name);
     }
+
+    public function toArray()
+    {
+        return $this->properties;
+    }
 }
