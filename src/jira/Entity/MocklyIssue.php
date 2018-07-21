@@ -37,6 +37,44 @@ class MocklyIssue extends ReadonlyIssue
                         'description' => 'Description project of Jira category',
                     ],
                 ],
+                'timetracking' => [
+                    'originalEstimate' => '2h',
+                    'remainingEstimate' => '1h',
+                    'timeSpent' => '1h',
+                    'originalEstimateSeconds' => 7200,
+                    'remainingEstimateSeconds' => 3600,
+                    'timeSpentSeconds' => 3600,
+                ],
+                'description' => 'The example of description in Jira',
+                'status' => [
+                    'self' => 'https://path.to.jira/rest/api/2/status/4',
+                    'description' => 'This issue was once resolved, but the resolution was deemed incorrect. From here issues are either marked assigned or resolved.',
+                    'iconUrl' => 'https://path.to.jira/images/icons/statuses/reopened.png',
+                    'name' => 'Reopened',
+                    'id' => 4,
+                    'statusCategory' => [
+                        'self' => 'https://jira.svyaznoy.ru/rest/api/2/statuscategory/2',
+                        'id' => 2,
+                        'key' => 'new',
+                        'colorName' => 'blue-gray',
+                        'name' => 'New',
+                    ],
+                ],
+                'labels' => ['example'],
+                'issuetype' => [
+                    'self' => 'https://path.to.jira/rest/api/2/issuetype/3',
+                    'id' => '3',
+                    'description' => 'A task that needs to be done.',
+                    'iconUrl' => 'https://path.to.jira/images/icons/issuetypes/task.png',
+                    'name' => 'Task',
+                    'subtask' => false,
+                ],
+                'priority' => [
+                    'self' => 'https://path.to.jira/rest/api/2/priority/3',
+                    'iconUrl' => 'https://path.to.jira/images/icons/priorities/major.png',
+                    'name' => 'Major',
+                    'id' => '3',
+                ],
                 'issuelinks' => [
                     [
                         'id' => 10,
@@ -57,6 +95,34 @@ class MocklyIssue extends ReadonlyIssue
                             ],
                         ],
                     ]
+                ],
+                'assignee' => [
+                    'self' => 'https://path.to.jira/rest/api/2/user?username=ypihtarev',
+                    'name' => 'username',
+                    'emailAddress' => 'username@example.ru',
+                    'avatarUrls' =>
+                        array (
+                            '16x16' => 'https://path.to.jira/secure/useravatar?size=xsmall&ownerId=ypihtarev&avatarId=11906',
+                            '24x24' => 'https://path.to.jira/secure/useravatar?size=small&ownerId=ypihtarev&avatarId=11906',
+                            '32x32' => 'https://path.to.jira/secure/useravatar?size=medium&ownerId=ypihtarev&avatarId=11906',
+                            '48x48' => 'https://path.to.jira/secure/useravatar?ownerId=ypihtarev&avatarId=11906',
+                        ),
+                    'displayName' => 'Display Username',
+                    'active' => true,
+                ],
+                'reporter' => [
+                    'self' => 'https://path.to.jira/rest/api/2/user?username=ypihtarev',
+                    'name' => 'username',
+                    'emailAddress' => 'username@example.ru',
+                    'avatarUrls' =>
+                        array (
+                            '16x16' => 'https://path.to.jira/secure/useravatar?size=xsmall&ownerId=ypihtarev&avatarId=11906',
+                            '24x24' => 'https://path.to.jira/secure/useravatar?size=small&ownerId=ypihtarev&avatarId=11906',
+                            '32x32' => 'https://path.to.jira/secure/useravatar?size=medium&ownerId=ypihtarev&avatarId=11906',
+                            '48x48' => 'https://path.to.jira/secure/useravatar?ownerId=ypihtarev&avatarId=11906',
+                        ),
+                    'displayName' => 'Display Username',
+                    'active' => true,
                 ],
             ],
         ];

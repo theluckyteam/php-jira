@@ -31,6 +31,51 @@ class ReadonlyIssue
         return $this->getProperty('issuelinks');
     }
 
+    public function getTimeTracking()
+    {
+        return $this->getProperty('timetracking');
+    }
+
+    public function getIssueType()
+    {
+        return $this->getProperty('issuetype');
+    }
+
+    public function getPriority()
+    {
+        return $this->getProperty('priority');
+    }
+
+    public function getDescription()
+    {
+        return $this->getProperty('description');
+    }
+
+    public function getStatus()
+    {
+        return $this->getProperty('status');
+    }
+
+    public function getLabels()
+    {
+        return $this->getProperty('labels');
+    }
+
+    public function getComments()
+    {
+        return $this->getProperty('comment');
+    }
+
+    public function getAssignee()
+    {
+        return $this->getProperty('assignee');
+    }
+
+    public function getReporter()
+    {
+        return $this->getProperty('reporter');
+    }
+
     public function getKey(): string
     {
         return $this->getProperty('key');

@@ -10,6 +10,15 @@ class IssuePropertyHelper
         'summary' => 1,
         'project' => 1,
         'issuelinks' => 1,
+        'timetracking' => 1,
+        'issuetype' => 1,
+        'priority' => 1,
+        'description' => 1,
+        'status' => 1,
+        'labels' => 1,
+        'comment' => 1,
+        'assignee' => 1,
+        'reporter' => 1,
     ];
 
     public static function exists($issue, $property): bool
@@ -24,6 +33,15 @@ class IssuePropertyHelper
                 case 'summary':
                 case 'project':
                 case 'issuelinks':
+                case 'timetracking':
+                case 'issuetype':
+                case 'priority':
+                case 'description':
+                case 'status':
+                case 'labels':
+                case 'comment':
+                case 'assignee':
+                case 'reporter':
                     return isset($issue['fields'][$property]);
                     break;
             }
@@ -45,6 +63,15 @@ class IssuePropertyHelper
             case 'summary':
             case 'project':
             case 'issuelinks':
+            case 'timetracking':
+            case 'issuetype':
+            case 'priority':
+            case 'description':
+            case 'status':
+            case 'labels':
+            case 'comment':
+            case 'assignee':
+            case 'reporter':
                 if (isset($issue['fields'][$property])) {
                     return $issue['fields'][$property];
                 }
