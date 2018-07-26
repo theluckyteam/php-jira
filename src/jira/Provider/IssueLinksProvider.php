@@ -4,19 +4,27 @@ namespace LuckyTeam\Jira\Provider;
 
 use LuckyTeam\Jira\Entity\ReadonlyIssue as Issue;
 use LuckyTeam\Jira\Repository\RepositoryDispatcher;
+use LuckyTeam\Jira\Util\IssueLinkHelper;
 
-class IssueLinksAggregator {
+/**
+ * Class IssueLinksProvider
+ * @package LuckyTeam\Jira\Provider
+ */
+class IssueLinksProvider {
 
     /**
-     * @var Issue
+     * @var Issue Root of issue tree
      */
     private $root;
 
     /**
-     * @var RepositoryDispatcher
+     * @var RepositoryDispatcher of Jira repositories
      */
     private $dispatcher;
 
+    /**
+     * @var array Query of issue
+     */
     private $issueQuery = [
         'fields' => ['id', 'summary', 'issuelinks'],
         'expand' => [],
@@ -25,16 +33,27 @@ class IssueLinksAggregator {
     ];
 
     /**
-     * @var int
+     * @var integer Max depth of tree
      */
     private $maxDepth = 1;
 
+    /**
+     * @var array An array of issues
+     */
     private $issues;
+
+    /**
+     * @var array An array of populated issues
+     */
     private $populatedIssueKeys;
+
+    /**
+     * @var integer Current depth of tree
+     */
     private $depth;
 
     /**
-     * Finder constructor
+     * Provider constructor
      *
      * @param Issue $root
      */
@@ -46,6 +65,9 @@ class IssueLinksAggregator {
         $this->populatedIssueKeys = [];
     }
 
+    /**
+     * Builds issue tree
+     */
     public function build()
     {
         $issue = $this->root;
@@ -59,13 +81,9 @@ class IssueLinksAggregator {
                 $this->populatedIssueKeys[$issue->getKey()] = 1;
 
                 foreach ($issue->getLinks() as $issueLink) {
-                    if (isset($issueLink['outwardIssue'])) {
-                        $unpopulatedIssue = $issueLink['outwardIssue'];
-                    } elseif (isset($issueLink['inwardIssue'])) {
-                        $unpopulatedIssue = $issueLink['inwardIssue'];
-                    }
-                    if (isset($unpopulatedIssue['key'])) {
-                        $unpopulatedIssueKeys[$unpopulatedIssue['key']] = $unpopulatedIssue['key'];
+                    $unpopulatedIssueKey = IssueLinkHelper::getLinkedIssueKey($issueLink);
+                    if ($unpopulatedIssueKey) {
+                        $unpopulatedIssueKeys[$unpopulatedIssueKey] = $unpopulatedIssueKey;
                     }
                 }
             }
@@ -77,10 +95,12 @@ class IssueLinksAggregator {
                 }
             }
 
-            $issues = $this->getIssuesFromRepositoryByKeys($notProcessedIssueKeys);
-            foreach ($issues as $issue) {
-                if (!array_key_exists($issue->getKey(), $this->issues)) {
-                    $this->issues[$issue->getKey()] = $issue;
+            if ($notProcessedIssueKeys) {
+                $issues = $this->getIssuesFromRepositoryByKeys($notProcessedIssueKeys);
+                foreach ($issues as $issue) {
+                    if (!array_key_exists($issue->getKey(), $this->issues)) {
+                        $this->issues[$issue->getKey()] = $issue;
+                    }
                 }
             }
 
@@ -89,14 +109,32 @@ class IssueLinksAggregator {
         }
     }
 
+    /**
+     * Returns issues by keys from repository
+     *
+     * @param string[] $keys Issue keys
+     *
+     * @return Issue[]
+     */
     private function getIssuesFromRepositoryByKeys(array $keys)
     {
-        $query = $this->issueQuery;
-        $query['jql'] = 'key IN (' . implode(',', $keys) . ')';
+        $issues = [];
+        if ($keys) {
+            $query = $this->issueQuery;
+            $query['jql'] = 'key IN (' . implode(',', $keys) . ')';
+            $issues = $this->dispatcher->getIssues($query);
+        }
 
-        return $this->dispatcher->getIssues($query);
+        return $issues;
     }
 
+    /**
+     * Returns issue by keys from memory
+     *
+     * @param string $key Issue keys
+     *
+     * @return Issue
+     */
     public function getIssueByKey($key)
     {
         if (array_key_exists($key, $this->issues) && isset($this->issues[$key])) {
@@ -119,7 +157,9 @@ class IssueLinksAggregator {
     }
 
     /**
-     * @param int $maxDepth
+     * Sets max depth of tree
+     *
+     * @param int $maxDepth Max depth of tree
      *
      * @return $this
      */
@@ -130,38 +170,10 @@ class IssueLinksAggregator {
         return $this;
     }
 
-    public function childs($issue = null)
-    {
-        if (null === $issue) {
-            $issue = $this->root;
-        }
-
-        $issueLinks = $issue->getLinks();
-        foreach ($issueLinks as &$issueLink) {
-            if (isset($issueLink['outwardIssue'])) {
-                if (isset($issueLink['outwardIssue']['key'], $this->issues[$issueLink['outwardIssue']['key']])) {
-                    $issueLink['outwardIssue'] = $this->issues[$issueLink['outwardIssue']['key']];
-                }
-            } elseif (isset($issueLink['inwardIssue'])) {
-                if (isset($issueLink['inwardIssue']['key'], $this->issues[$issueLink['inwardIssue']['key']])) {
-                    $issueLink['inwardIssue'] = $this->issues[$issueLink['inwardIssue']['key']];
-                }
-            }
-        }
-
-        return $issueLinks;
-    }
-
     /**
-     * @return Issue
-     */
-    public function getRoot()
-    {
-        return $this->root;
-    }
-
-    /**
-     * @param array $issueQuery
+     * Sets query of issue
+     *
+     * @param array $issueQuery Query of issue
      *
      * @return $this
      */
