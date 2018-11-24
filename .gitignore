@@ -1,5 +1,4 @@
 composer.lock
 config/config.php
 example/get_issue_links.php
-example/get_issues.php
 vendor
