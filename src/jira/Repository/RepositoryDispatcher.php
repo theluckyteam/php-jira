@@ -62,6 +62,7 @@ class RepositoryDispatcher
             $authSessionRepository = new CookieAuthSessionRepository(
                 $this->endpoint, $this->username, $this->password
             );
+            $authSessionRepository->setClient($this->client);
             $this->repositories['cookie_auth_session'] = $authSessionRepository;
         }
 
