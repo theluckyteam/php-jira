@@ -54,10 +54,6 @@ class CookieAuthSessionRepository
         $this->endpoint = $endpoint;
         $this->username = $username;
         $this->password = $password;
-        $this->client = new Client([
-            RequestOptions::TIMEOUT => 6,
-            RequestOptions::CONNECT_TIMEOUT => 3,
-        ]);
     }
 
     public function get() : CookieAuthSession
@@ -117,6 +113,14 @@ class CookieAuthSessionRepository
         }
 
         return $response;
+    }
+
+    public function createDefaultClient()
+    {
+        return new Client([
+            RequestOptions::TIMEOUT => 6,
+            RequestOptions::CONNECT_TIMEOUT => 3,
+        ]);
     }
 
     /**
