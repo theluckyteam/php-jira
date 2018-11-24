@@ -104,11 +104,12 @@ class RepositoryDispatcher
     {
         $repository = null;
 
-        if ('issue' === $name) {
+        if ('issue' === $name
+            || IssueRepository::class === $name) {
             if (!isset($this->repositories['issue'])) {
                 $repository = new IssueRepository($this->endpoint);
                 $repository->setRepositoryDispatcher($this);
-                $this->repositories['issue'] = $repository;
+                $this->addRepository($repository);
             } else {
                 $repository = $this->repositories['issue'];
             }
@@ -117,5 +118,23 @@ class RepositoryDispatcher
         }
 
         return $repository;
+    }
+
+    /**
+     * Register the repository in the manager
+     *
+     * @param RepositoryInterface $repository
+     *
+     * @throws \Exception
+     */
+    public function addRepository(RepositoryInterface $repository)
+    {
+        if ($repository instanceof IssueRepository) {
+            $type = 'issue';
+        } else {
+            throw new \Exception('Unknown repository type.');
+        }
+
+        $this->repositories[$type] = $repository;
     }
 }

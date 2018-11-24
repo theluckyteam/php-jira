@@ -10,7 +10,7 @@ use LuckyTeam\Jira\Entity\ReadonlyIssue as Issue;
  * Class IssueRepository
  * @package LuckyTeam\Jira\Repository
  */
-class IssueRepository
+class IssueRepository implements RepositoryInterface
 {
     /**
      * @var Client
