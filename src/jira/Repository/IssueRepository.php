@@ -83,6 +83,10 @@ class IssueRepository implements RepositoryInterface
                     if (is_array($value)) {
                         $query[$param] = implode(',', $value);
                     }
+                } elseif ('expand' === $param) {
+                    if (is_array($value)) {
+                        $query[$param] = implode(',', $value);
+                    }
                 } else {
                     unset($query[$param]);
                 }
