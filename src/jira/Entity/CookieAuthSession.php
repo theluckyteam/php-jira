@@ -11,12 +11,12 @@ class CookieAuthSession
     /**
      * @var string Value of cookie name
      */
-    private $name;
+    private string $name;
 
     /**
      * @var string Value of cookie
      */
-    private $value;
+    private string $value;
 
     /**
      * CookieAuthSession constructor

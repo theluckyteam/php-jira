@@ -15,32 +15,32 @@ class CookieAuthSessionRepository
     /**
      * @var CookieAuthSession
      */
-    private $authSession;
+    private CookieAuthSession $authSession;
 
     /**
      * @var string Username of Jira
      */
-    private $username;
+    private string $username;
 
     /**
      * @var string Password of Jira
      */
-    private $password;
+    private string $password;
 
     /**
      * @var string Endpoint for obtaining AuthSession
      */
-    private $endpoint;
+    private string $endpoint;
 
     /**
      * @var string Endpoint for obtaining AuthSession
      */
-    private $path = '/rest/auth/1/session';
+    private string $path = '/rest/auth/1/session';
 
     /**
      * @var Client
      */
-    private $client;
+    private Client $client;
 
     /**
      * CookieAuthSessionRepository constructor
